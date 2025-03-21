@@ -1,5 +1,5 @@
 #include <iostream>
-#include <vector>//模板类，并且是一个容器类
+#include <vector>//模板类，并且是一个容器类，容器（如数组、链表、集合等）的一种，它可以容纳多种类型的数据。
 using namespace std;
 class Solution {
 public:
