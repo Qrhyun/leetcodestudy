@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 using namespace std;
+//数组其实就是一个简单的哈希表，而且数组的大小是受限的，
 class Solution {
 public:
     bool isAnagram(string s,string t){
