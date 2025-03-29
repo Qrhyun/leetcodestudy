@@ -119,7 +119,7 @@ public:
      que.push(root);//先把根节点压入队列
      while(!que.empty()){
       int size = que.size();//因为要记录每一层的节点个数，为的是所有的点都执行下述for循环
-      depth++;//每一层的节点个数就是二叉树的深度
+      depth++;//每一层的节点个数就是二叉树的深度,先把根节点的深度加1
       for(int i=0;i<size;i++){
        TreeNode* node = que.front();//用一个临时的树节点来容纳队列的头节点
        que.pop();
