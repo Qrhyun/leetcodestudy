@@ -48,14 +48,14 @@ public:
   }
 };
 
-//上面的前序遍历隐藏了太多回溯
+//上面的后序遍历隐藏了太多回溯
 法三：递归法中的前序遍历充分表现出求深度回溯的过程
 //通过前序求的根节点高度来求的二叉树最大深度。
 #include <iostream>
 using namespace std;
 class Solution{
 public:
-   int result;//定义一个全局变量，用来存放最大深度
+   int result;//定义一个全局变量，用来存放最大深度，必须放在最上面，下面要用
    void getDepth(TreeNode* node,int depth){
     //首先排除空根节点的情况
     result =depth>result?depth:result;//中

@@ -48,6 +48,7 @@ public:
 using namespace std;
 class Solution {
 private:
+     //注意这里是私有的
     int result;
     void getdepth(TreeNode* node, int depth) {
         // 函数递归终止条件
@@ -68,9 +69,10 @@ private:
     }
 
 public:
+    注意这里是公有的
     int minDepth(TreeNode* root) {
         if (root == nullptr) {
-            return 0;
+             return 0;
         }
         result = INT_MAX;
         getdepth(root, 1);
