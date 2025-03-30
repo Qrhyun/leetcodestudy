@@ -18,7 +18,7 @@ public:
     TreeNode *right = root->right;
     int leftDepth = 0, rightDepth = 0; // 这里初始为0是有目的的，为了下面求指数方便,即为了后面用公式方便
     while (left)
-    {
+    {//while循环判断
       left = left->left;
       leftDepth++;
     }
