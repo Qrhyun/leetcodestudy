@@ -1,0 +1,85 @@
+# 忽略系统文件
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+
+# 忽略日志文件
+*.log
+*.log.*
+*.tmp
+*.temp
+
+# 忽略配置文件（根据需要调整）
+config.json
+settings.json
+.env
+.env.*
+.env.local
+.env.production
+.env.development
+
+# 忽略IDE生成的文件
+.idea/
+.vscode/
+*.iml
+*.ipynb_checkpoints/
+.project
+.settings/
+nbproject/
+
+# 忽略构建工具生成的文件
+node_modules/
+bower_components/
+dist/
+build/
+out/
+target/
+bin/
+obj/
+__pycache__/
+
+# 忽略测试文件
+coverage/
+*.test.js
+*.spec.js
+*.spec.ts
+*.test.ts
+
+# 忽略临时文件
+*.swp
+*.swo
+*.swn
+*.swm
+*.swl
+*.swk
+*.swj
+*.swi
+*.swf
+*.swc
+*.swb
+*.swa
+
+# 忽略数据库文件
+*.db
+*.sqlite
+*.sqlite3
+
+# 忽略用户生成的文件
+*.user
+*.userprefs
+
+# 忽略Docker相关文件
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# 忽略其他
+*.bak
+*.bak.*
+*.old
+*.orig
+*.rej
+*.swp
+*.swo
