@@ -1,0 +1,217 @@
+## 700.二叉搜索树中的搜索
+
+`递归法`
+
+```cpp
+class Solution {
+public:
+    TreeNode* searchBST(TreeNode* root, int val) {
+        if(root == NULL) return NULL;
+        TreeNode *cur = root;
+        //截止条件
+        if(cur->val == val) {
+            return cur;
+        }
+
+        //左
+        if(val < cur->val) {
+             return searchBST(cur->left, val);
+        }
+
+        //右
+        if(val > cur->val) {
+            return searchBST(cur->right, val);
+        }
+
+        return NULL;
+    }
+};
+```
+
+`迭代法`
+
+```cpp
+class Solution {
+public:
+    TreeNode* searchBST(TreeNode* root, int val) {
+        stack<TreeNode*> que;
+
+        if (root == NULL)
+            return NULL;
+        que.push(root);
+        while (!que.empty()) {
+            TreeNode* cur = que.top();
+            if (cur->val == val) {
+                return que.top();
+                break;
+            }
+            que.pop();
+            if (val < cur->val && cur->left) {
+                que.push(cur->left);
+            }
+            if (val > cur->val && cur->right) {
+                que.push(cur->right);
+            }
+        }
+        return NULL;
+    }
+};
+```
+
+- 注意上面条件里面一个加 && cur->left 是因为 while 循环里面没有下述语句
+
+```cpp
+if (root == NULL)
+            return NULL;
+```
+
+- 第一种方法每次迭代的时候都会有这两行代码
+
+## 98.验证二叉搜索树
+- 中序遍历下，输出的二叉搜索树节点的数值是有序序列
+- 递归中序遍历将二叉搜索树转变成一个数组
+`递归`
+#### 递归法一：转化为数组
+- 错误答案
+   + 错误 1：遍历方式错误
+   > 在类中定义了 result 作为成员变量，但 traversal 每次都返回它，没有清空，导致多次调用会残留上一次的结果。
+   + 错误 2：for 循环写法错误
+   > **i 是元素的值**，不是索引。你应该用索引遍历
+```cpp
+class Solution {
+public:
+    vector<int> result;
+    vector<int> traversal(TreeNode *root) {
+        if(root == NULL) return result;
+        //result.push_back(root->val);
+        traversal(root->left);
+        result.push_back(root->val);
+        traversal(root->right);
+        return result;
+    }
+    bool isValidBST(TreeNode* root) {
+        //result.clear();
+        traversal(root);
+        for(int i = 1; i < result.size(); ++i) {
+            if(result[i] <= result[i-1]) return false;
+        }
+
+        return true;
+    }
+};
+```
+- 正确答案1
+```cpp
+class Solution {
+public:
+    vector<int> result;
+    vector<int> traversal(TreeNode *root) {
+        if(root == NULL) return result;
+        //result.push_back(root->val);
+        traversal(root->left);
+        result.push_back(root->val);
+        traversal(root->right);
+        return result;
+    }
+    bool isValidBST(TreeNode* root) {
+        //result.clear();
+        traversal(root);
+        for(int i = 1; i < result.size(); ++i) {
+            if(result[i] <= result[i-1]) return false;
+        }
+
+        return true;
+    }
+};
+```
+- 正确答案2
+```cpp
+class Solution {
+private:
+    vector<int> vec;
+    void traversal(TreeNode* root) {
+        if (root == NULL) return;
+        traversal(root->left);
+        vec.push_back(root->val); // 将二叉搜索树转换为有序数组
+        traversal(root->right);
+    }
+public:
+    bool isValidBST(TreeNode* root) {
+        vec.clear(); // 不加这句在leetcode上也可以过，但最好加上
+        traversal(root);
+        for (int i = 1; i < vec.size(); i++) {
+            // 注意要小于等于，搜索树里不能有相同元素
+            if (vec[i] <= vec[i - 1]) return false;
+        }
+        return true;
+    }
+};
+```
+#### 递归法二：递归遍历的时候就判断
+- 误区1：不能单纯的比较左节点小于中间节点，右节点大于中间节点就完事了。我们要比较的是 左子树所有节点小于中间节点，右子树所有节点大于中间节点
+- 误区2： 样例中最小节点 可能是int的最小值，如果这样使用最小的int来比较也是不行的。此时可以初始化比较元素为longlong的最小值。当然问题可以进一步演进：如果样例中根节点的val 可能是longlong的最小值 又要怎么办呢？
+```cpp
+class Solution {
+public:
+    long long maxVal = LONG_MIN;//因为后台测试数据中有int最小值
+    bool isValidBST(TreeNode *root) {
+        //截止条件，当所有节点遍历完成了，,当然为true
+        if(root == NULL) return true;
+        
+        bool left = isValidBST(root->left); //左
+
+        if(maxVal < root->val) maxVal = root->val;
+
+        else return false;
+        bool right = isValidBST(root->right);
+
+        return left && right;
+    }
+};
+```
+#### 递归法三：记录前一个值
+- 如果测试数据中有 longlong的最小值，怎么办？
+- 建议避免 初始化最小值，如下方法取到最左面节点的数值来比较
+- 记录前一个节点
+```cpp
+class Solution {
+public:
+    TreeNode* pre = NULL; // 用来记录前一个节点
+    bool isValidBST(TreeNode* root) {
+        if (root == NULL) return true;
+        bool left = isValidBST(root->left);
+
+        if (pre != NULL && pre->val >= root->val) return false;
+        pre = root; // 记录前一个节点
+
+        bool right = isValidBST(root->right);
+        return left && right;
+    }
+};
+```
+#### 迭代法
+```cpp
+class Solution {
+public:
+    bool isValidBST(TreeNode* root) {
+        stack<TreeNode*> st;
+        TreeNode* cur = root;
+        TreeNode* pre = NULL; // 记录前一个节点
+        while (cur != NULL || !st.empty()) {
+            if (cur != NULL) {
+                st.push(cur);
+                cur = cur->left;                // 左
+            } else {
+                cur = st.top();                 // 中
+                st.pop();
+                if (pre != NULL && cur->val <= pre->val)
+                return false;
+                pre = cur; //保存前一个访问的结点
+
+                cur = cur->right;               // 右
+            }
+        }
+        return true;
+    }
+};
+```
