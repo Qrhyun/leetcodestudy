@@ -172,7 +172,8 @@ public:
 #### 递归法三：记录前一个值
 - 如果测试数据中有 longlong的最小值，怎么办？
 - 建议避免 初始化最小值，如下方法取到最左面节点的数值来比较
-- 记录前一个节点
+- 记录前一个节点。用pre指针
+
 ```cpp
 class Solution {
 public:
@@ -215,3 +216,123 @@ public:
     }
 };
 ```
+
+## 530.二叉搜索树的最小绝对差
+- 遇到在二叉搜索树上求什么最值啊，差值之类的，就把它想成在一个有序数组上求最值，求差值，这样就简单多了。
+- 对于有序数组来说，很明显最小的差值只会存在于相邻的两个数字之间
+`递归法之转化为数组法`
+```cpp
+class Solution {
+private:
+    vector<int> vec;
+    void traversal(TreeNode *root) {
+        if(root == NULL) return;
+        traversal(root->left);
+        vec.push_back(root->val);// 将二叉搜索树转换为有序数组
+        traversal(root->right);
+    }
+public:
+    int getMinimumDifference(TreeNode* root) {
+        vec.clear();
+        traversal(root);
+        if(vec.size() < 2) return 0;//要单独考虑这一个情况
+        int result = INT_MAX;
+        for(int i = 1; i < vec.size(); i++) {
+            result = min(result, vec[i] - vec[i-1]);
+        }
+        return result;
+    }
+};
+```
+`递归法之边递归边判断`
+- 记录前一个值.用pre指针
+- 这里这个写法最好记住，还有就是注意pre = cur的位置，这个业务下需要不条件的赋值
+```cpp
+class Solution {
+public:
+    int result = INT_MAX;
+    TreeNode *pre = NULL;
+    void getmin(TreeNode *cur) {
+        if(cur == NULL) return;//截止条件
+        getmin(cur->left); // 左
+        if(pre != NULL) {//中
+            result = min(result, cur->val - pre->val);
+            //pre = cur;
+        }
+        pre = cur;
+        getmin(cur->right);//右
+    }
+    int getMinimumDifference(TreeNode* root) {
+        if(!root->left && !root->right) {
+            return 0;
+        }
+        getmin(root);
+        return result;
+    }
+};
+```
+`迭代法`
+```cpp
+class Solution {
+public:
+    int getMinimumDifference(TreeNode* root) {
+        stack<TreeNode*> st;
+        TreeNode* cur = root;
+        TreeNode* pre = NULL;
+        int result = INT_MAX;
+        while (cur != NULL || !st.empty()) {
+            if (cur != NULL) { // 指针来访问节点，访问到最底层
+                st.push(cur); // 将访问的节点放进栈
+                cur = cur->left;                // 左
+            } else {
+                cur = st.top();
+                st.pop();
+                if (pre != NULL) {              // 中
+                    result = min(result, cur->val - pre->val);
+                }
+                pre = cur;
+                cur = cur->right;               // 右
+            }
+        }
+        return result;
+    }
+};
+```
+
+## 501.二叉搜索树中的众数
+- 如果不是二叉搜索树，最直观的方法一定是把这个树都遍历了，用map统计频率，把频率排个序，最后取前面高频的元素的集合。`map<int, int> key:元素，value:出现频率`
+```cpp
+class Solution {
+private:
+
+void searchBST(TreeNode* cur, unordered_map<int, int>& map) { // 前序遍历
+    if (cur == NULL) return ;
+    map[cur->val]++; // 统计元素频率
+    searchBST(cur->left, map);
+    searchBST(cur->right, map);
+    return ;
+}
+bool static cmp (const pair<int, int>& a, const pair<int, int>& b) {
+    return a.second > b.second;
+}
+public:
+    vector<int> findMode(TreeNode* root) {
+        unordered_map<int, int> map; // key:元素，value:出现频率
+        vector<int> result;
+        if (root == NULL) return result;
+        searchBST(root, map);
+        vector<pair<int, int>> vec(map.begin(), map.end());
+        sort(vec.begin(), vec.end(), cmp); // 给频率排个序
+        result.push_back(vec[0].first);
+        for (int i = 1; i < vec.size(); i++) {
+            // 取最高的放到result数组中
+            if (vec[i].second == vec[0].second) result.push_back(vec[i].first);
+            else break;
+        }
+        return result;
+    }
+};
+```
+- 既然是搜索树，它中序遍历就是有序的。遍历有序数组的元素出现频率，从头遍历，那么一定是相邻两个元素作比较，然后就把出现频率最高的元素输出就可以了。这里可以用pre,cur指针
+- 本题的焦点在于最大概率的元素不一定是一个，可能是多个，
+
