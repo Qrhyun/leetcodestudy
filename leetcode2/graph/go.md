@@ -6,6 +6,7 @@
 - 输出结果：结果都存在了 result数组里（二维数组，每一行是一个结果），最后将其打印出来
 ### 广度优先搜索分析
 - [b站](https://www.bilibili.com/video/BV1M19iY4EL9/?vd_source=b3fd84988e8e921a37b4fa1da8d481db)
+
 `邻接矩阵写法`
 ```cpp
 int dir[4][2] = {0, 1, 1, 0, -1, 0, 0, -1}; // 表示四个方向
@@ -75,7 +76,7 @@ while(m--) {
 ```
 ## 98.所有可达路径
 ### 深度优先搜索代码
-`邻接j矩阵写法`
+`邻接矩阵写法`
 ```cpp
 #include <iostream>
 #include <vector>
